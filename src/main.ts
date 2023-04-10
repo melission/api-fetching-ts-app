@@ -31,11 +31,6 @@ interface PhotoSearchAPIResult {
   next_page: string;
 }
 
-interface StoredUserLikes {
-  photos: number[];
-  videos: number[];
-}
-
 const PEXELS_API_KEY = "hFC7xuAzaT4Af81QYKA7o5yVdf9FOKNyNpPl16QioZRDzaBzBh4k1df6"
 
 async function fetchImagesFromAPI(searchTerm: string, perPage: number): Promise<PhotoSearchAPIResult> {
