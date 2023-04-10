@@ -1,5 +1,5 @@
 import "./style.css";
-import {render, html} from "lit-html"
+import {render, html, nothing} from "lit-html"
 
 
 interface Photo {
@@ -31,6 +31,11 @@ interface PhotoSearchAPIResult {
   next_page: string;
 }
 
+interface StoredUserLikes {
+  photos: number[];
+  videos: number[];
+}
+
 const PEXELS_API_KEY = "hFC7xuAzaT4Af81QYKA7o5yVdf9FOKNyNpPl16QioZRDzaBzBh4k1df6"
 
 async function fetchImagesFromAPI(searchTerm: string, perPage: number): Promise<PhotoSearchAPIResult> {
@@ -50,19 +55,57 @@ async function fetchImagesFromAPI(searchTerm: string, perPage: number): Promise<
 } 
 
 
-fetchImagesFromAPI('dogs', 5).then((data) => {
-  const htmlToRender = html`
-    <h1>Results for "dogs"</h1>
-    <ul>
-      ${data.photos.map((photo) => {
-        return html`<li><img src=${photo.src.small} /></li>`;
-      })}
-    </ul>
-  `;
-  const div = document.getElementById('app');
-  if (!div) {
-    throw new Error("could not find app div")
-  }
-  render(htmlToRender, div)
-});
+// fetchImagesFromAPI('dogs', 5).then((data) => {
+//   // const htmlToRender = html`
+//   //   <h1>Results for "dogs"</h1>
+//   //   <ul>
+//   //     ${data.photos.map((photo) => {
+//   //       return html`<li><img src=${photo.src.small} /></li>`;
+//   //     })}
+//   //   </ul>
+//   // `;
+//   // const div = document.getElementById('app');
+//   // if (!div) {
+//   //   throw new Error("could not find app div")
+//   // }
+//   // render(htmlToRender, div)
+// });
 
+async function onFormSubmit(event: SubmitEvent) {
+  event.preventDefault();
+  if (!event.target) {
+    return ;
+  }
+  // here "as" is needed because TS doesnt know that event.target is a form element. 
+  const formData = new FormData(event.target as HTMLFormElement);
+
+  const query = formData.get("search-query");
+  if (query && typeof query === "string") {
+    const results = await fetchImagesFromAPI(query, 10)
+    renderApp(results)
+  }
+}
+
+function renderApp(results: PhotoSearchAPIResult | null): void {
+  const div = document.getElementById("app");
+  if (!div) {
+    throw new Error("couldnt'd find app div")
+  }
+  const htmlToRender = html`
+  <h1>Amazing Photo App</h1>
+
+  <form id="search" @submit=${onFormSubmit}>
+    <input type="text" name="search-query" placeholder="for example: dogs" />
+    <input type="submit" value="Search" />
+  </form>
+  <ul>
+    ${results ? results.photos.map((photo) => {
+      return html`<li><img src=${photo.src.small} /></li>`;
+    })
+  : nothing}
+  </ul>
+  `;
+  render(htmlToRender, div);
+}
+
+renderApp(null);
