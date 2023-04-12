@@ -56,7 +56,13 @@ export interface PhotoSearchAPIResult {
  }
 
 const PEXELS_API_KEY = "hFC7xuAzaT4Af81QYKA7o5yVdf9FOKNyNpPl16QioZRDzaBzBh4k1df6"
-  
+
+export function isPhoto(object: Photo | Video): object is Photo {
+    //duration is an attribute of Video interface only
+    const hasDuration = "duration" in object;
+    return !hasDuration;
+}
+
 export async function fetchImagesFromAPI(searchTerm: string, perPage: number): Promise<PhotoSearchAPIResult> {
     const result = await fetch(
       `https://api.pexels.com/v1/search?query=${searchTerm}&per_page=${perPage}`, 
