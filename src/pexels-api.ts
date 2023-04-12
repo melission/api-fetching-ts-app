@@ -72,3 +72,18 @@ export async function fetchImagesFromAPI(searchTerm: string, perPage: number): P
     const json = (await result.json()) as PhotoSearchAPIResult;
     return json
   } 
+
+  export async function fetchVideosFromAPI(searchTerm: string, perPage: number): 
+  Promise<VideoSearchAPIResult> {
+    const result = await fetch(
+        `https://api.pexels.com/v1/videos/search?query=${searchTerm}&per_page=${perPage}`,
+        {
+            headers: {
+                Authorization: PEXELS_API_KEY,
+            },
+        }
+    );
+    
+    const json = (await result.json()) as VideoSearchAPIResult;
+    return json;
+  }
