@@ -27,6 +27,7 @@ ul {
 
 .photo img {
   display: block;
+  max-width: 100%;
 }
 
 .photo button {
