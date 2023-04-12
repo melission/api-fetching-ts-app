@@ -1,6 +1,7 @@
 import "./style.css";
 import {render, html, nothing} from "lit-html";
-import { fetchImagesFromAPI, PhotoSearchAPIResult } from "./pexels-api";
+import { fetchImagesFromAPI, fetchVideosFromAPI, Photo, 
+  PhotoSearchAPIResult, Video } from "./pexels-api";
 import { renderPhoto } from "./photo-renderer";
 import { loadLikes, saveLikes } from "./storage";
 
@@ -15,12 +16,19 @@ async function onFormSubmit(event: SubmitEvent) {
 
   const query = formData.get("search-query");
   if (query && typeof query === "string") {
-    const results = await fetchImagesFromAPI(query, 10)
-    renderApp(results)
+    const results = await fetchImagesFromAPI(query, 10);
+    const videos = await fetchVideosFromAPI(query, 10);
+
+    const photosAndVideos: Array<Photo | Video> = [];
+    for (let i = 0; i < results.photos.length; i++){
+      photosAndVideos.push(results.photos[i]);
+      photosAndVideos.push(videos.videos[i]);
+    }
+    renderApp(photosAndVideos);
   }
 }
 
-function renderApp(results: PhotoSearchAPIResult | null): void {
+function renderApp(results: Array<Photo | Video> | null): void {
   const div = document.getElementById("app");
   if (!div) {
     throw new Error("couldnt'd find app div")
