@@ -25,20 +25,20 @@ function renderApp(results: PhotoSearchAPIResult | null): void {
   if (!div) {
     throw new Error("couldnt'd find app div")
   }
-
-function onUserLikeClick(photoID: number): void {
   const likedData = loadLikes() || {
     photos: [],
     videos: [],
   };
-  const photoIsLiked = likedData.photos.includes(photoID);
-  if (photoIsLiked) {
-    likedData.photos = likedData.photos.filter( (id) => id !== photoID);
-  } else {
-    likedData.photos.push(photoID);
-  }
-  saveLikes(likedData)
-};
+  function onUserLikeClick(photoID: number): void {
+    const photoIsLiked = likedData.photos.includes(photoID);
+    if (photoIsLiked) {
+      likedData.photos = likedData.photos.filter( (id) => id !== photoID);
+    } else {
+      likedData.photos.push(photoID);
+    }
+    saveLikes(likedData);
+    renderApp(results);
+  };
 
   const htmlToRender = html`
   <h1>Amazing Photo App</h1>
@@ -49,7 +49,8 @@ function onUserLikeClick(photoID: number): void {
   </form>
   <ul>
     ${results ? results.photos.map((photo) => {
-      return renderPhoto(photo, onUserLikeClick);
+      const photoIsLiked = likedData.photos.includes(photo.id);
+      return renderPhoto(photo, onUserLikeClick, photoIsLiked);
     })
   : nothing}
   </ul>
