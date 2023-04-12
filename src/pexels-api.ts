@@ -30,6 +30,31 @@ export interface PhotoSearchAPIResult {
     readonly next_page: string;
   }
   
+ export interface VideoFile {
+    id: number;
+    qualirt: "hd" | "sd";
+    file_type: string;
+    width: number;
+    height: number;
+    link: string;
+ }
+ 
+ export interface Video {
+    readonly id: number;
+    readonly url: string;
+    readonly image: number;
+    readonly duration: number;
+    readonly video_files: readonly VideoFile[];
+ }
+
+ export interface VideoSearchAPIResult {
+    readonly page: number;
+    readonly per_page: number;
+    readonly next_page: number;
+    readonly total_results: number;
+    readonly videos: readonly Video[];
+ }
+
 const PEXELS_API_KEY = "hFC7xuAzaT4Af81QYKA7o5yVdf9FOKNyNpPl16QioZRDzaBzBh4k1df6"
   
 export async function fetchImagesFromAPI(searchTerm: string, perPage: number): Promise<PhotoSearchAPIResult> {
