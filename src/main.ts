@@ -2,7 +2,7 @@ import "./style.css";
 import {render, html, nothing} from "lit-html";
 import { fetchImagesFromAPI, fetchVideosFromAPI, Photo, 
   PhotoSearchAPIResult, Video, isPhoto } from "./pexels-api";
-import { renderPhoto } from "./object-renderer";
+import { renderPhoto, renderVideo } from "./object-renderer";
 import { loadLikes, saveLikes } from "./storage";
 
 
@@ -61,8 +61,8 @@ function renderApp(results: Array<Photo | Video> | null): void {
         const photoIsLiked = likedData.photos.includes(recourse.id)
         return renderPhoto(recourse, onUserLikeClick, photoIsLiked)
       } else {
-        //render video
-        return nothing;
+        const videoIsLiked = likedData.videos.includes(recourse.id);
+        return renderVideo(recourse, onUserLikeClick, videoIsLiked);
       }
     })
   : nothing}
