@@ -2,16 +2,16 @@
 
 
 export interface Photo {
-    id: number;
-    width: number; 
-    height: number;
-    url: string;
-    photographer: string;
-    photographer_url: string;
-    photographer_id: string;
-    avg_color: string;
+    readonly id: number;
+    readonly width: number; 
+    readonly height: number;
+    readonly url: string;
+    readonly photographer: string;
+    readonly photographer_url: string;
+    readonly photographer_id: string;
+    readonly avg_color: string;
     //src might be a separate interface, but atm there is no need for that
-    src: {
+    readonly src: Readonly<{
       original: string;
       large2x: string;
       large: string;
@@ -19,15 +19,15 @@ export interface Photo {
       small: string;
       portrait: string;
       tiny: string;
-    }
+    }>
   }
   
 export interface PhotoSearchAPIResult {
-    total_results: number;
-    page: number;
-    per_page: number;
-    photos: Photo[];
-    next_page: string;
+    readonly total_results: number;
+    readonly page: number;
+    readonly per_page: number;
+    readonly photos: readonly Photo[];
+    readonly next_page: string;
   }
   
 const PEXELS_API_KEY = "hFC7xuAzaT4Af81QYKA7o5yVdf9FOKNyNpPl16QioZRDzaBzBh4k1df6"
