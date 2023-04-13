@@ -55,6 +55,8 @@ export interface PhotoSearchAPIResult {
     readonly videos: readonly Video[];
  }
 
+export type Resurce = Photo | Video;
+
 const PEXELS_API_KEY = "hFC7xuAzaT4Af81QYKA7o5yVdf9FOKNyNpPl16QioZRDzaBzBh4k1df6"
 
 export function isPhoto(object: Photo | Video): object is Photo {
