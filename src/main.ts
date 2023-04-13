@@ -1,7 +1,7 @@
 import "./style.css";
 import {render, html, nothing} from "lit-html";
 import { fetchImagesFromAPI, fetchVideosFromAPI, Photo, 
-  PhotoSearchAPIResult, Video, isPhoto, Resurce } from "./pexels-api";
+  PhotoSearchAPIResult, Video, isPhoto, Resource } from "./pexels-api";
 import { renderPhoto, renderVideo } from "./object-renderer";
 import { loadLikes, saveLikes } from "./storage";
 
@@ -19,7 +19,7 @@ async function onFormSubmit(event: SubmitEvent) {
     const results = await fetchImagesFromAPI(query, 10);
     const videos = await fetchVideosFromAPI(query, 10);
 
-    const photosAndVideos: Array<Resurce> = [];
+    const photosAndVideos: Array<Resource> = [];
     for (let i = 0; i < results.photos.length; i++){
       photosAndVideos.push(results.photos[i]);
       photosAndVideos.push(videos.videos[i]);
@@ -28,7 +28,7 @@ async function onFormSubmit(event: SubmitEvent) {
   }
 }
 
-function renderApp(results: Array<Resurce> | null): void {
+function renderApp(results: Array<Resource> | null): void {
   const div = document.getElementById("app");
   if (!div) {
     throw new Error("couldnt'd find app div")
@@ -37,7 +37,7 @@ function renderApp(results: Array<Resurce> | null): void {
     photos: [],
     videos: [],
   };
-  function onUserLikeClick(resource: Resurce): void {
+  function onUserLikeClick(resource: Resource): void {
     let arrayOfLikes: number[] = [];
     if (isPhoto(resource)) {
       arrayOfLikes = likedData.photos;

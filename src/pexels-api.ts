@@ -55,11 +55,13 @@ export interface PhotoSearchAPIResult {
     readonly videos: readonly Video[];
  }
 
-export type Resurce = Photo | Video;
+
+ //union type
+export type Resource = Photo | Video;
 
 const PEXELS_API_KEY = "hFC7xuAzaT4Af81QYKA7o5yVdf9FOKNyNpPl16QioZRDzaBzBh4k1df6"
 
-export function isPhoto(object: Photo | Video): object is Photo {
+export function isPhoto(object: Resource): object is Photo {
     //duration is an attribute of Video interface only
     const hasDuration = "duration" in object;
     return !hasDuration;
