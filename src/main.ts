@@ -1,8 +1,7 @@
 import "./style.css";
 import {render, html, nothing} from "lit-html";
-import { fetchImagesFromAPI, fetchVideosFromAPI, Photo, 
-  PhotoSearchAPIResult, Video, isPhoto, Resource } from "./pexels-api";
-import { renderPhoto, renderVideo } from "./object-renderer";
+import { fetchImagesFromAPI, fetchVideosFromAPI, isPhoto, Resource } from "./pexels-api";
+import { renderResource } from "./object-renderer";
 import { loadLikes, saveLikes } from "./storage";
 
 
@@ -70,14 +69,11 @@ function renderApp(results: Array<Resource> | null): void {
     <input type="submit" value="Search" />
   </form>
   <ul>
-    ${results ? results.map((recourse) => {
-      if (isPhoto(recourse)) {
-        const photoIsLiked = likedData.photos.includes(recourse.id)
-        return renderPhoto(recourse, onUserLikeClick, photoIsLiked)
-      } else {
-        const videoIsLiked = likedData.videos.includes(recourse.id);
-        return renderVideo(recourse, onUserLikeClick, videoIsLiked);
-      }
+    ${results ? results.map((resource) => {
+      const resourceIsLiked = isPhoto(resource) 
+      ? likedData.photos.includes(resource.id)
+      : likedData.videos.includes(resource.id);
+      return renderResource(resource, onUserLikeClick, resourceIsLiked)
     })
   : nothing}
   </ul>
