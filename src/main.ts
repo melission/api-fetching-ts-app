@@ -37,13 +37,27 @@ function renderApp(results: Array<Photo | Video> | null): void {
     photos: [],
     videos: [],
   };
-  function onUserLikeClick(photoID: number): void {
-    const photoIsLiked = likedData.photos.includes(photoID);
-    if (photoIsLiked) {
-      likedData.photos = likedData.photos.filter( (id) => id !== photoID);
+  function onUserLikeClick(resource: Photo | Video): void {
+    let arrayOfLikes: number[] = [];
+    if (isPhoto(resource)) {
+      arrayOfLikes = likedData.photos;
     } else {
-      likedData.photos.push(photoID);
+      arrayOfLikes = likedData.videos;
     }
+
+    const recourseIsLiked = arrayOfLikes.includes(resource.id);
+    if (recourseIsLiked) { 
+      arrayOfLikes = arrayOfLikes.filter((id) => id !== resource.id)
+    } else {
+      arrayOfLikes.push(resource.id)
+    }
+
+    if (isPhoto(resource)){
+      likedData.photos = arrayOfLikes;
+    } else {    
+      likedData.videos = arrayOfLikes;
+    }
+
     saveLikes(likedData);
     renderApp(results);
   };
