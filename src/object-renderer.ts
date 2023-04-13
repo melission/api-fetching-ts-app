@@ -3,21 +3,23 @@ import { html } from "lit-html";
 
 export function renderPhoto(
     photo: Photo, 
-    onLikeClick: (photoID: number) => void, 
+    onLikeClick: (resource: Photo) => void, 
     photoIsLiked: boolean 
     ) {
     return html`<li class="photo"><img src=${photo.src.small} />
-    <button class="like" @click=${ () => onLikeClick(photo.id)}>${photoIsLiked ? "Dislike" : "Like"}</button>
+    <button class="like" @click=${ () => onLikeClick(photo)}>
+    ${photoIsLiked ? "Dislike" : "Like"}
+    </button>
     </li>`
 }
 
 export function renderVideo(
     video: Video, 
-    onLikeClick: (videoID: number) => void,
+    onLikeClick: (resource: Video) => void,
     videoIsLiked: boolean
     ) {
         return html`<li class="photo"><img src=${video.image} />
-        <button class="like" @click=${() => onLikeClick(video.id)}>
+        <button class="like" @click=${() => onLikeClick(video)}>
         ${videoIsLiked ? "Dislike" : "Like"} 
         </button>
         </li>`
