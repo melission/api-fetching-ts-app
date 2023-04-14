@@ -2,7 +2,7 @@ import "./style.css";
 import {render, html, nothing} from "lit-html";
 import { fetchImagesFromAPI, fetchVideosFromAPI, isPhoto, Resource } from "./pexels-api";
 import { renderResource } from "./object-renderer";
-import { loadLikes, saveLikes } from "./storage";
+import { LikedResource, loadLikes, saveLikes } from "./storage";
 
 
 async function onFormSubmit(event: SubmitEvent) {
@@ -32,32 +32,31 @@ function renderApp(results: Array<Resource> | null): void {
   if (!div) {
     throw new Error("couldnt'd find app div")
   }
-  const likedData = loadLikes() || {
-    photos: [],
-    videos: [],
-  };
+  const likedData = loadLikes() || [];
+
   function onUserLikeClick(resource: Resource): void {
-    let arrayOfLikes: number[] = [];
-    if (isPhoto(resource)) {
-      arrayOfLikes = likedData.photos;
+    const enumResourceType = isPhoto(resource) 
+    ? LikedResource.Photo 
+    : LikedResource.Video;
+
+    const likedResourceEntry = likedData.find((entry) => {
+      return(entry.id === resource.id && entry.resourceType === enumResourceType);
+    });
+
+    const resourceIsLiked = likedResourceEntry !== undefined;
+
+    let newLikedResources = likedData;
+
+    if (resourceIsLiked) {
+      newLikedResources = newLikedResources.filter(
+        (entry) => entry !== likedResourceEntry);
     } else {
-      arrayOfLikes = likedData.videos;
+      newLikedResources.push({
+        id: resource.id,
+        resourceType: enumResourceType,
+      });
     }
-
-    const recourseIsLiked = arrayOfLikes.includes(resource.id);
-    if (recourseIsLiked) { 
-      arrayOfLikes = arrayOfLikes.filter((id) => id !== resource.id)
-    } else {
-      arrayOfLikes.push(resource.id)
-    }
-
-    if (isPhoto(resource)){
-      likedData.photos = arrayOfLikes;
-    } else {    
-      likedData.videos = arrayOfLikes;
-    }
-
-    saveLikes(likedData);
+    saveLikes(newLikedResources);
     renderApp(results);
   };
 
@@ -69,12 +68,16 @@ function renderApp(results: Array<Resource> | null): void {
     <input type="submit" value="Search" />
   </form>
   <ul>
-    ${results ? results.map((resource) => {
-      const resourceIsLiked = isPhoto(resource) 
-      ? likedData.photos.includes(resource.id)
-      : likedData.videos.includes(resource.id);
-      return renderResource(resource, onUserLikeClick, resourceIsLiked)
-    })
+  ${ results ? results.map((resource) => {
+    const resourceIsLiked = likedData.some((entry) => {
+      const enumResourceType = isPhoto(resource) 
+      ? LikedResource.Photo : LikedResource.Video;
+      return (
+        entry.id === resource.id && entry.resourceType === enumResourceType
+      );
+    });
+    return renderResource(resource, onUserLikeClick, resourceIsLiked);
+  })
   : nothing}
   </ul>
   `;
